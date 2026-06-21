@@ -1,0 +1,36 @@
+# Binaries and executables
+main
+main_linux
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of go coverage; be sure to use study cover
+*.out
+
+# Dependency directories (only needed if untracked)
+# vendor/
+
+# Env overrides
+.env
+.env.*
+!.env.example
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Log files and system generated tasks
+*.log
+.system_generated/

@@ -1,0 +1,48 @@
+name: task-manager
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: task_manager_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: task_manager
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: task_manager_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: task_manager_app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_DSN=root:rootpassword@tcp(db:3306)/task_manager?parseTime=true
+      - REDIS_ADDR=redis:6379
+      - JWT_SECRET=super_secret_key_2026
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
